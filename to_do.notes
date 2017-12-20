@@ -1,11 +1,8 @@
 To do:
 ------
 4) support more than one list
-5) clean up after FT runs
-6) remove time.sleeps
 7) adjust model so that items are associated with different lists
 8) add unique urls for each list
-9) add a url for creating new list via POST
 10) add urls for adding a new item to an existing list via post
 10)
 10)
@@ -21,3 +18,6 @@ Done:
 1) code smell: Post test is too long?
 2) don't save blank items for
 3) display multiple items in the table
+5) clean up after FT runs
+6) remove time.sleeps
+9) add a url for creating new list via POST
