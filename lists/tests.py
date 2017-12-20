@@ -9,9 +9,9 @@ class HomePageTest(TestCase):
 
   def test_home_page_returns_correct_html(self):
     response = self.client.get('/') #pass the url we want to test
+    self.assertTemplateUsed(response, 'home.html') # is the recieved html the home.html?
 
-    self.assertTemplateUsed(response, 'home.html')
-
+    # self.assertEqual(response, 'home.html') # purposefully failing test
 """
 # way of looking without Django test client
 
