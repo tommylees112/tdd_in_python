@@ -71,8 +71,6 @@ class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveSer
     self.wait_for_row_in_list_table('1: Buy peacock feathers')
     self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
-
-
   def test_multiple_users_can_start_lists_at_different_urls(self):
     # edith wonders whether site will remember her list - then she sees the site
     # has generated a unique url for her -- there is some explanatory text
@@ -90,8 +88,8 @@ class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveSer
     # now a new user, Francis, comes along to the site
     ## we use a new browser session to make sure that no information sent thru
     ## edith's cookies etc.
-    self.broswer.quit()
-    self.broswer = webdriver.Firefox()
+    self.browser.quit()
+    self.browser = webdriver.Firefox()
 
     # francis visits the home page. There's no sign of Edith's list
     self.browser.get(self.live_server_url)
