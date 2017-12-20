@@ -13,24 +13,6 @@ class HomePageTest(TestCase):
     response = self.client.get('/') #pass the url we want to test
     self.assertTemplateUsed(response, 'home.html') # is the recieved html the home.html?
 
-  # create a POST request to database then redirect to home page
-  def test_can_save_a_POST_request(self):
-    self.client.post('/', data={'item_text': 'A new list item'}) # create the new item
-
-    self.assertEqual(Item.objects.count(), 1) # check that item saved to database
-    new_item = Item.objects.first() # get the first item
-    self.assertEqual(new_item.text, 'A new list item')
-
-  def test_redirects_after_POST(self):
-    response = self.client.post('/', data={'item_text': 'A new list item'})
-    # HTTP redirect = 302 pointing browser to new location
-    self.assertEqual(response.status_code, 302)
-    self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
-
-  def test_only_saves_items_when_necessary(self):
-    self.client.get('/')
-    self.assertEqual(Item.objects.count(), 0)
-
 class ItemModelTest(TestCase):
 
   def test_saving_and_retrieving_items(self):
@@ -68,6 +50,19 @@ class ListViewTest(TestCase):
 
     self.assertContains(response, 'itemey 1') # helper method for dealing with the bytes of response (convert to utf-8 automatically)
     self.assertContains(response, 'itemey 2')
+
+class NewListTest(TestCase):
+
+  def test_can_save_a_POST_request(self):
+    # post Item to database and check that contains the right text
+    self.client.post('/lists/new', data = {'item_text': 'A new list item'})
+    self.assertEqual(Item.objects.count(), 1)
+    new_item = Item.objects.first()
+    self.assertEqual(new_item.text, 'A new list item')
+
+  def test_redirects_after_POST(self):
+    response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+    self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
 
 """
 class marginalia():
@@ -108,5 +103,33 @@ class marginalia():
     # print("\n--------\n", response.content.decode())
     self.assertIn('itemey 1', response.content.decode())
     self.assertIn('itemey 2', response.content.decode())
+
+# before learning django method assertRedirects()
+  def test_redirects_after_POST(self):
+    # test that redirected to list specific page after posted new item
+    response = self.client.post('/lists/new', data = {'item_text': 'A new list item'}) #without slash @ end = ACTION
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+
+# remove from home_page class because home no longer doing these actions
+
+  def test_only_saves_items_when_necessary(self):
+    self.client.get('/')
+    self.assertEqual(Item.objects.count(), 0)
+
+  def test_redirects_after_POST(self):
+    response = self.client.post('/', data={'item_text': 'A new list item'})
+    # HTTP redirect = 302 pointing browser to new location
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+
+  # create a POST request to database then redirect to home page
+  def test_can_save_a_POST_request(self):
+    self.client.post('/', data={'item_text': 'A new list item'}) # create the new item
+
+    self.assertEqual(Item.objects.count(), 1) # check that item saved to database
+    new_item = Item.objects.first() # get the first item
+    self.assertEqual(new_item.text, 'A new list item')
+
 
 """
