@@ -32,12 +32,7 @@ class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveSer
   def tearDown(self):
     self.browser.quit()
 
-  def check_for_row_in_list_table(self, row_text):
-    table = self.browser.find_element_by_id('id_list_table')
-    rows = table.find_elements_by_tag_name('tr')
-    self.assertIn(row_text, [row.text for row in rows])
-
-  def test_can_start_a_list_and_retrieve_it_later(self):
+  def test_can_start_a_list_for_one_user(self):
     # Edith heard about a new online to do app, she goes to check out the homepage
     self.browser.get(self.live_server_url)
 
@@ -68,8 +63,10 @@ class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveSer
     input_box.send_keys(Keys.ENTER)
 
     # the page updates again, and now shows both items on the list
-    self.wait_for_row_in_list_table('1: Buy peacock feathers')
     self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
+    self.wait_for_row_in_list_table('1: Buy peacock feathers')
+
+    # satisfied she goes back to sleep
 
   def test_multiple_users_can_start_lists_at_different_urls(self):
     # edith wonders whether site will remember her list - then she sees the site
@@ -104,7 +101,7 @@ class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveSer
     self.wait_for_row_in_list_table('1: Buy milk')
 
     # Francis gets his own URL
-    francis_list_url = self.broswer.current_url
+    francis_list_url = self.browser.current_url
     self.assertRegex(francis_list_url, '/lists/.+')
     self.assertNotEqual(francis_list_url, edith_list_url)
 
@@ -140,4 +137,10 @@ explicit wait time & explicit assertions
   time.sleep(1) # explicit wait time for page to reload
   self.check_for_row_in_list_table('1: Buy peacock feathers')
   self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+
+# no need for this method any more
+  def check_for_row_in_list_table(self, row_text):
+    table = self.browser.find_element_by_id('id_list_table')
+    rows = table.find_elements_by_tag_name('tr')
+    self.assertIn(row_text, [row.text for row in rows])
 """

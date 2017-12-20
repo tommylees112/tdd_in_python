@@ -1,10 +1,6 @@
 To do:
 ------
-4) support more than one list
-7) adjust model so that items are associated with different lists
-8) add unique urls for each list
-10) add urls for adding a new item to an existing list via post
-10)
+11) refactor away duplication in urls
 10)
 10)
 10)
@@ -21,3 +17,7 @@ Done:
 5) clean up after FT runs
 6) remove time.sleeps
 9) add a url for creating new list via POST
+4) support more than one list
+7) adjust model so that items are associated with different lists
+8) add unique urls for each list
+10) add urls for adding a new item to an existing list via post
