@@ -1,3 +1,4 @@
+# from IPython.core.debugger import Tracer
 from django.test import TestCase
 from django.urls import resolve
 from django.http import HttpRequest
@@ -12,12 +13,38 @@ class HomePageTest(TestCase):
     response = self.client.get('/') #pass the url we want to test
     self.assertTemplateUsed(response, 'home.html') # is the recieved html the home.html?
 
-    # self.assertEqual(response, 'home.html') # purposefully failing test
-
+  # create a POST request to database then redirect to home page
   def test_can_save_a_POST_request(self):
+    self.client.post('/', data={'item_text': 'A new list item'}) # create the new item
+
+    self.assertEqual(Item.objects.count(), 1) # check that item saved to database
+    new_item = Item.objects.first() # get the first item
+    self.assertEqual(new_item.text, 'A new list item')
+
+  def test_redirects_after_POST(self):
     response = self.client.post('/', data={'item_text': 'A new list item'})
-    self.assertIn('A new list item', response.content.decode())
-    self.assertTemplateUsed(response, 'home.html')
+    # HTTP redirect = 302 pointing browser to new location
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response['location'], '/')
+
+  def test_only_saves_items_when_necessary(self):
+    self.client.get('/')
+    self.assertEqual(Item.objects.count(), 0)
+
+  def test_displays_all_list_items(self):
+    # set up the test
+    Item.objects.create(text='itemey 1')
+    Item.objects.create(text='itemey 2')
+
+    # print("ITEMS:\n====\n" ,[item.text for item in Item.objects.all()])
+
+    # call the test
+    response = self.client.get('/')
+
+    # assertions (things to check)
+    # print("\n--------\n", response.content.decode())
+    self.assertIn('itemey 1', response.content.decode())
+    self.assertIn('itemey 2', response.content.decode())
 
 class ItemModelTest(TestCase):
 
@@ -42,6 +69,7 @@ class ItemModelTest(TestCase):
     self.assertEqual(first_saved_item.text, 'The first (ever) list item')
     self.assertEqual(second_saved_item.text, 'Item the second')
 
+
 """
 # way of looking without Django test client
 
@@ -58,4 +86,9 @@ class ItemModelTest(TestCase):
     self.assertIn('<title>To-Do lists</title>', html)
     self.assertTrue(html.strip().endswith('</html>'))
     self.assertEqual(html, expected_html)
+
+
+# check a response has the content rendered by a template
+    self.assertIn('A new list item', response.content.decode())
+    self.assertTemplateUsed(response, 'home.html')
 """
