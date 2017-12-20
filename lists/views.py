@@ -10,6 +10,6 @@ def home_page(request):
 
   # write the HTML template page
   items = Item.objects.all()
-  return render(request, 'home.html', {'items': items}) # REMEMBER: to pass the items in the render argument to view
+  return render(request, 'home.html', {'items': items}) # REMEMBER: to pass the items in the render argument to html template
 
 

@@ -1,9 +1,12 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 import unittest
 
-class NewVisitorTest(unittest.TestCase): #inherit behaviour from unittest.TestCase
+# TO RUN: $ python manage.py test functional_tests
+
+class NewVisitorTest(LiveServerTestCase): #inherit behaviour from django.LiveServerTestCase // unittest.TestCase
 
   def setUp(self):
     self.browser = webdriver.Firefox()
@@ -18,7 +21,7 @@ class NewVisitorTest(unittest.TestCase): #inherit behaviour from unittest.TestCa
 
   def test_can_start_a_list_and_retrieve_it_later(self):
     # Harry heard about a new online to do app, she goes to check out the homepage
-    self.browser.get('http://localhost:8000')
+    self.browser.get(self.live_server_url)
 
     # he notices the header and title mention to-do lists
     self.assertIn('To-Do', self.browser.title)
@@ -61,9 +64,7 @@ class NewVisitorTest(unittest.TestCase): #inherit behaviour from unittest.TestCa
     # satisfied she goes back to sleep
     self.fail('Finish the test!')
 
-if __name__ == '__main__':
-  unittest.main(warnings='ignore')
-
+#
 """
 Selenium methods:
 ----------------
@@ -79,5 +80,10 @@ refactor the any method:
     f"New to-do item did not appear in table. Contents were:\n {table.text}" # error message
     )
   self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+
+remove if want to use the django liveservertestcase
+  if __name__ == '__main__':
+  #   unittest.main(warnings='ignore')
+
 
 """
